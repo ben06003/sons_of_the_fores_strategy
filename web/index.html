@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>森林之子 指南書</title>
+<style>
+:root{
+  --bg1:#22301f; --bg2:#0e1410; --page1:#f4f0f5; --page2:#e8e2ea; --ink:#3a343c; --muted:#8c828e;
+  --rule:#cdbeca; --pink:#e8a8b5; --pinkink:#542c38; --gold:#d9a441;
+  --font:"Microsoft JhengHei UI","Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif;
+  --emoji:"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:linear-gradient(#22301f,#0e1410) fixed;color:var(--ink);font-family:var(--font);overflow:hidden}
+#app{height:100%;display:flex;flex-direction:column;max-width:1000px;margin:0 auto;padding:14px 16px 16px}
+header{display:flex;align-items:flex-end;gap:16px;padding:0 0 14px 34px;flex:none}
+header .ttl h1{margin:0;font-size:24px;color:var(--gold);letter-spacing:1px;white-space:nowrap}
+header .ttl small{color:#8ca091;font-size:12px}
+#q{margin-left:auto;width:min(320px,48vw);padding:7px 10px;font:15px var(--font);background:#efeaf0;border:1px solid #9aa;border-radius:4px;outline:none}
+#q:focus{border-color:var(--gold)}
+.book{flex:1;min-height:0;display:flex;position:relative}
+.stage{flex:1;position:relative;margin-left:30px;min-width:0}
+/* 線圈 */
+.spiral{position:absolute;left:4px;top:14px;bottom:14px;width:52px;z-index:5;pointer-events:none;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='52' height='24'%3E%3Ccircle cx='40' cy='12' r='3.6' fill='%23463e46'/%3E%3Cpath d='M41 11 C 30 3, 8 3, 4 9' fill='none' stroke='%23262628' stroke-width='4.4' stroke-linecap='round'/%3E%3Cpath d='M38 8.6 C 28 3.2, 12 3.4, 6 7.6' fill='none' stroke='%23a0a0a6' stroke-width='1.3' stroke-linecap='round'/%3E%3C/svg%3E") repeat-y 0 0/52px 24px}
+/* 頁面 */
+.pg{position:absolute;inset:0;border-radius:22px;background:linear-gradient(var(--page1),var(--page2));border:1px solid #d6cdd8;
+  box-shadow:6px 8px 0 rgba(0,0,0,.35);display:flex;flex-direction:column;padding:16px clamp(22px,7%,56px) 14px;transform-origin:left center;backface-visibility:hidden;overflow:hidden}
+.pg .corner{display:flex;justify-content:space-between;font-size:13px;font-weight:bold}
+.pg .corner span:last-child{color:var(--muted);font-weight:normal}
+.pg h2{margin:6px 0 0;text-align:center;font-size:clamp(24px,4.4vh,40px);letter-spacing:1px;line-height:1.25;position:relative;padding:0 44px}
+.pg .en{text-align:center;color:var(--muted);font-size:clamp(13px,1.9vh,17px);min-height:1.4em;margin-top:4px}
+.pg hr{border:0;border-top:1.5px solid var(--rule);margin:12px 0 14px;width:100%}
+.star{position:absolute;right:0;top:50%;transform:translateY(-50%);background:none;border:0;font-size:34px;cursor:pointer;color:var(--muted);font-family:var(--font);line-height:1}
+.star.on{color:#c9a227}
+.body{flex:1;min-height:0;overflow:auto;padding:4px 2px 8px;scrollbar-width:thin}
+.foot{display:flex;justify-content:space-between;gap:10px;padding-top:10px;flex:none}
+.foot button{flex:0 0 28%;padding:10px 0;border:0;border-radius:14px;background:var(--pink);color:var(--pinkink);font:16px var(--font);cursor:pointer}
+.foot button.mid{flex-basis:20%}
+.foot button:hover{filter:brightness(1.05)}
+.foot .ph{flex:0 0 28%}
+.foot .ph.mid{flex-basis:20%}
+/* 書籤 */
+.tabs{width:122px;flex:none;display:flex;flex-direction:column;gap:5px;padding:16px 0 10px;margin-left:-14px;z-index:1}
+.tab{position:relative;flex:1 1 0;max-height:58px;min-height:30px;border:0;border-radius:7px;padding:4px 8px 4px 20px;cursor:pointer;display:flex;
+  background:color-mix(in srgb,var(--c) 75%,#000);font:inherit}
+.tab .in{flex:1;border-radius:4px;background:#e2dce2;display:flex;align-items:center;gap:6px;padding:0 6px;min-width:0}
+.tab .g{font-family:var(--emoji);font-size:clamp(14px,2.2vh,20px);filter:grayscale(1) brightness(.55);flex:none}
+.tab .l{font-weight:bold;font-size:clamp(11px,1.6vh,14px);color:color-mix(in srgb,var(--c) 55%,#000);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tab.on{background:var(--c);margin-left:-12px;z-index:6}
+.tab.on .in{background:#faf7fa}
+.tab:hover:not(.on) .in{background:#ece6ec}
+/* 目錄 */
+.idx{display:grid;grid-template-columns:1fr;gap:9px 14px}
+.idx.two{grid-template-columns:1fr 1fr;grid-auto-flow:column;grid-template-rows:repeat(10,auto)}
+.it{display:flex;align-items:center;gap:8px;min-height:48px;background:#fcfafc;border:1px solid #ded4de;border-radius:10px;padding:5px 10px 5px 0;cursor:pointer;text-align:left;font:inherit;color:inherit;position:relative;overflow:hidden}
+.it::before{content:"";position:absolute;left:0;top:20%;bottom:20%;width:5px;background:var(--c)}
+.it:hover{border-color:var(--c)}
+.it .g{font-family:var(--emoji);font-size:22px;width:44px;text-align:center;filter:grayscale(1) brightness(.6);flex:none}
+.it .t{flex:1;min-width:0}
+.it b{display:block;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.it small{color:var(--muted);font-size:12px}
+.it .r{color:var(--rule);font-size:22px;padding-right:4px}
+.it .r.fav{color:#c9a227;font-size:18px}
+.src{color:var(--muted);font-size:12px;text-align:center;margin-top:18px;line-height:1.6}
+/* 詳細頁 */
+.mats{display:flex;flex-direction:column;align-items:center;gap:18px;margin:8px 0 22px}
+.row{display:flex;align-items:center;gap:0}
+.plus{width:clamp(18px,4vw,40px);text-align:center;font-size:clamp(20px,3vh,32px);color:var(--muted);font-weight:bold}
+.mat{position:relative;width:clamp(76px,15vh,124px);aspect-ratio:1;background:#fdfcfd;border:1.5px solid #d8ccd6;border-radius:14%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4%}
+.mat .g{font-family:var(--emoji);font-size:clamp(28px,5.4vh,46px);filter:grayscale(1) brightness(.45);line-height:1.1}
+.mat .n{font-weight:bold;font-size:clamp(12px,1.8vh,16px);text-align:center;padding:0 4px;line-height:1.2}
+.mat .q{position:absolute;right:2px;top:-11px;background:var(--c);color:#fff;font-weight:bold;font-size:clamp(11px,1.6vh,14px);padding:1px 8px;border-radius:999px}
+.box{background:#fbf8fb;border:1.3px solid #dccfd9;border-radius:12px;padding:12px 16px;margin-bottom:14px}
+.box h4{margin:0 0 4px;font-size:14px;color:var(--c)}
+.box p{margin:0;font-size:clamp(15px,2.4vh,20px);line-height:1.6}
+.steps{border:1.3px dashed #e1c8d2;border-radius:12px;padding:10px 14px;text-align:center;color:var(--pinkink);font-size:clamp(13px,1.8vh,15px)}
+/* 說明頁 */
+.dg{width:100%;height:clamp(170px,30vh,280px);display:block;background:#f7fafc;border:1px solid #d6dee4;border-radius:12px;margin-bottom:16px}
+ol.gl{list-style:none;margin:0;padding:0;counter-reset:n}
+ol.gl li{counter-increment:n;position:relative;padding-left:40px;margin-bottom:12px;font-size:clamp(15px,2.4vh,21px);line-height:1.55}
+ol.gl li::before{content:counter(n);position:absolute;left:0;top:.15em;width:1.3em;height:1.3em;border-radius:50%;background:var(--c);color:#fff;font-size:.85em;font-weight:bold;display:flex;align-items:center;justify-content:center}
+.empty{text-align:center;color:var(--muted);margin-top:12vh;font-size:18px;white-space:pre-line}
+.empty .g{font-family:var(--emoji);font-size:80px;filter:grayscale(1) opacity(.35);display:block;margin-bottom:12px}
+/* 翻頁動畫 */
+@keyframes turnOut{from{transform:perspective(2200px) rotateY(0)}to{transform:perspective(2200px) rotateY(-96deg);filter:brightness(.75)}}
+@keyframes turnIn{from{transform:perspective(2200px) rotateY(-96deg);filter:brightness(.75)}to{transform:perspective(2200px) rotateY(0)}}
+.turn-out{animation:turnOut .32s cubic-bezier(.4,.1,.6,1) forwards;z-index:3}
+.turn-in{animation:turnIn .32s cubic-bezier(.4,.1,.6,1) forwards;z-index:3}
+@media (prefers-reduced-motion:reduce){.turn-out,.turn-in{animation-duration:.01s}}
+/* 手機 */
+@media (max-width:700px){
+  #app{padding:10px 10px 12px}
+  header{flex-wrap:wrap;padding-left:0;gap:8px}
+  header .ttl h1{font-size:20px}
+  #q{width:100%;margin-left:0}
+  .book{flex-direction:column}
+  .tabs{order:-1;width:auto;flex-direction:row;overflow-x:auto;margin:0 0 8px;padding:0 0 4px;gap:6px}
+  .tab{flex:none;min-height:40px;padding:4px;max-height:none}
+  .tab.on{margin-left:0;margin-top:0}
+  .stage{margin-left:16px}
+  .spiral{top:58px;left:-8px;transform:scale(.8);transform-origin:left top}
+  .idx.two{grid-template-columns:1fr;grid-auto-flow:row;grid-template-rows:none}
+  .pg{padding:12px 16px 10px 26px}
+  .mat{width:min(17vw,100px)}
+  .mat .g{font-size:min(8vw,38px)}
+  .mat .n{font-size:min(3vw,14px)}
+  .plus{width:4vw;font-size:18px}
+  .body{overflow-x:hidden}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="ttl"><h1>森林之子 指南書</h1><small>Sons Of The Forest</small></div>
+    <input id="q" type="search" placeholder="搜尋（例：繩子、骨頭、斜撐）" autocomplete="off">
+  </header>
+  <div class="book">
+    <div class="spiral"></div>
+    <div class="stage" id="stage"></div>
+    <nav class="tabs" id="tabs"></nav>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+const B = window.BOOK, ROWS = 10;
+const FONT = '"Microsoft JhengHei UI","Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
+const $ = s => document.querySelector(s);
+const stage = $('#stage'), q = $('#q');
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const store = {
+  get(k, d){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){ return d; } },
+  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+};
+let favs = new Set(store.get('sotf-book-favs', []));
+let tab = 'help', prevTab = 'help', pages = [], idx = 0, cur = null;
+const idOf = e => e.tab + ':' + e.e;
+const SEARCH_TAB = {key:'search', label:'搜尋', glyph:'🔍', color:'#466e78'};
+const tabDef = k => B.tabs.find(t => t.key === k) || SEARCH_TAB;
+const visibleTabs = () => tab === 'search' ? [...B.tabs, SEARCH_TAB] : B.tabs;
+const isBuild = t => ['house','defense','storage','furniture','transport'].includes(t);
+
+// 圖示對照（與 APP 相同）
+const GLYPHS = [
+  ['十字架','✝'],['床','🛏'],['椅','🪑'],['沙發','🛋'],['花盆','🌱'],['雨水','🌧'],['晾乾','🥩'],['壁爐','🔥'],['木筏','🛶'],['船','🛶'],['傳送','🌀'],['神龕','🗿'],
+  ['防禦牆','🧱'],['木刺','🔱'],['瞭望塔','🗼'],['鳥屋','🐦'],['兔籠','🐇'],['稻草人','🎃'],['時鐘','🕰'],['吊燈','💡'],['腿燈','💡'],['聚光燈','🔦'],['警報','🚨'],
+  ['梯','🪜'],['步道','👣'],['平台','🟫'],['門','🚪'],['地板','🟫'],['小屋','🛖'],['木屋','🏡'],['樹屋','🌳'],['斜頂','⛺'],['雪橇','🛷'],['滑翔翼','🪂'],['戰利品','🦌'],
+  ['地毯','🦌'],['桌','🍽'],['層架','📚'],['壁架','📚'],['紙靶','🎯'],['鍍層','⚙'],['儲存','📦'],['儲物','📦'],['架','📦'],['箱','📦'],['滑索','⚓'],['繫船','⚓'],
+  ['木板','🟫'],['石塊','🧱'],['防水布','⛺'],['燈泡','💡'],['龜殼','🐢'],['無線電','📻'],['手榴彈','💣'],['手臂','💪'],['腿','🦵'],['怪物皮甲','👹'],['騎士','🛴'],
+  ['樹脂','🧪'],['C4','💣'],['炸彈','💣'],['汽油彈','🔥'],['打火機','🔥'],['火把','🔥'],['營火','🔥'],['火堆','🔥'],['頭骨燈','💀'],['頭骨','💀'],['骨頭','🦴'],
+  ['原木','🌲'],['木棍','🥢'],['小石頭','⚫'],['石頭','⛰'],['繩','➰'],['布','🧣'],['膠帶','⭕'],['樹葉','🍃'],['獸皮','🦌'],['電線','🔌'],['電池','🔋'],['電路板','💾'],
+  ['伏特加','🍾'],['羽毛','🐦'],['美工刀','🔪'],['手錶','⌚'],['硬幣','💰'],['科技網','🕸'],['抓鉤','⚓'],['雪果','🍒'],['毒蠅傘','🍄'],['箭','🏹'],['弓','🏹'],
+  ['長矛','🔱'],['棍棒','🏏'],['蘆薈','🌵'],['蓍草','🌼'],['柳蘭','🌸'],['木賊','🌾'],['菊苣','🌷'],['香脂根','🌻'],['魔鬼棒','🌿'],['罐頭','🥫'],['開罐器','🔧'],
+  ['貓食','🐱'],['電鋸','⚙'],['手電筒','🔦'],['護甲','🛡'],['藥劑','💊'],['修理','🔨'],['水壺','💧'],['面具','🎭']
+];
+function glyph(name, tabKey){
+  for (const [k, g] of GLYPHS) if (name.includes(k)) return g;
+  if (name === '頭') return '👤';
+  return tabDef(tabKey).glyph;
+}
+
+// ---------- 頁面建立 ----------
+function has(hay, query){
+  hay = hay.toLowerCase();
+  return query.toLowerCase().split(/[\s　]+/).filter(Boolean).every(w => hay.includes(w));
+}
+const matchEntry = (e, s) => has([e.n, e.e, e.d, tabDef(e.tab).label, ...(e.m || [])].join(' '), s);
+
+function build(key){
+  const td = tabDef(key), targets = [], items = [];
+  const qs = q.value.trim();
+  if (key === 'help' || key === 'howto') {
+    for (const g of B[key] || []) { const p = {kind:'guide', title:g.t, guide:g}; targets.push(p); items.push({label:g.t, sub:g.items.length + ' 則', target:p}); }
+  } else {
+    let list = key === 'fav' ? B.items.filter(e => favs.has(idOf(e)))
+             : key === 'search' ? B.items.filter(e => matchEntry(e, qs))
+             : B.items.filter(e => e.tab === key);
+    for (const e of list) { const p = {kind:'detail', title:e.n, entry:e}; targets.push(p); items.push({label:e.n, sub:e.e, target:p}); }
+    if (key === 'search') {
+      for (const g of [...B.help, ...(B.howto || [])]) {
+        const its = g.items.filter(i => has(g.t + ' ' + i, qs));
+        if (!its.length) continue;
+        const p = {kind:'guide', title:g.t, guide:{...g, items:its}};
+        targets.push(p); items.push({label:'📖 ' + g.t, sub:'說明', target:p});
+      }
+    }
+  }
+  if (!items.length) return [{kind:'empty', title:td.label, sub: key === 'fav' ? '還沒有最愛\n在詳細頁點右上角的 ☆ 加入' : '找不到符合的資料'}];
+  const per = ROWS * 2, n = Math.ceil(items.length / per), out = [];
+  for (let i = 0; i < n; i++) {
+    const rows = items.slice(i * per, (i + 1) * per);
+    rows.forEach(r => r.target.back = i);
+    out.push({kind:'index', title: key === 'search' ? '搜尋：' + qs : td.label, sub: n > 1 ? `目錄 ${i + 1} / ${n}` : '目錄', rows});
+  }
+  return out.concat(targets);
+}
+
+// ---------- 頁面繪製 ----------
+function parseMat(m){
+  const x = m.indexOf('×');
+  if (x >= 0) return [m.slice(0, x).trim(), '×' + m.slice(x + 1).trim()];
+  const r = m.match(/^(.*?)\s*((?:約\s*)?\d+\s*ml)$/);
+  return r ? [r[1].trim(), r[2].replace(/\s/g, '')] : [m, ''];
+}
+
+function renderPage(){
+  const p = pages[idx], total = pages.length;
+  const td = p.entry ? tabDef(p.entry.tab) : tabDef(tab);
+  const el = document.createElement('div');
+  el.className = 'pg';
+  el.style.setProperty('--c', td.color);
+  const fav = p.entry && favs.has(idOf(p.entry));
+  let html = `<div class="corner"><span style="color:${td.color}">${esc(p.entry ? tabDef(p.entry.tab).label : td.label)}</span><span>${idx + 1} / ${total}</span></div>
+    <h2>${esc(p.title)}${p.kind === 'detail' ? `<button class="star ${fav ? 'on' : ''}" data-act="fav" title="加入最愛">${fav ? '★' : '☆'}</button>` : ''}</h2>
+    <div class="en">${p.kind === 'empty' ? '' : esc(p.kind === 'detail' ? p.entry.e : (p.sub || ''))}</div><hr><div class="body">`;
+
+  if (p.kind === 'index') {
+    html += `<div class="idx ${p.rows.length > ROWS ? 'two' : ''}">` + p.rows.map((it, i) => {
+      const e = it.target.entry, c = e ? tabDef(e.tab).color : td.color;
+      return `<button class="it" style="--c:${c}" data-go="${pages.indexOf(it.target)}">
+        ${e ? `<span class="g">${glyph(e.n + e.e, e.tab)}</span>` : '<span style="width:12px"></span>'}
+        <span class="t"><b>${esc(it.label)}</b><small>${esc(it.sub)}</small></span>
+        <span class="r ${e && favs.has(idOf(e)) ? 'fav' : ''}">${e && favs.has(idOf(e)) ? '★' : '›'}</span></button>`;
+    }).join('') + '</div>';
+    if (tab === 'help' && idx === 0) html += `<div class="src">${esc(B.sources)}</div>`;
+  } else if (p.kind === 'detail') {
+    const e = p.entry, m = e.m || [], n = m.length;
+    const per = n <= 4 ? n : (n <= 6 ? 3 : 4);
+    html += '<div class="mats">';
+    for (let r = 0; r * per < n; r++) {
+      html += '<div class="row">' + m.slice(r * per, r * per + per).map((x, i) => {
+        const [name, qty] = parseMat(x);
+        return (i ? '<span class="plus">+</span>' : '') +
+          `<div class="mat"><span class="g">${glyph(name, e.tab)}</span><span class="n">${esc(name)}</span>${qty ? `<span class="q">${esc(qty)}</span>` : ''}</div>`;
+      }).join('') + '</div>';
+    }
+    html += '</div>';
+    if (e.d) html += `<div class="box"><h4>說明</h4><p>${esc(e.d)}</p></div>`;
+    const steps = e.tab === 'print' ? '到 3D 印表機（GPS 綠點）前選擇圖樣列印'
+      : e.e === 'Campfire' ? '① 按 B 開指南書選擇營火　② 放上木棍與原木　③ 用打火機點燃'
+      : isBuild(e.tab) ? '① 按 B 開指南書放置藍圖　② 把材料放進藍圖　③ 或叫 Kelvin「完成建築」'
+      : '① 按 I 開背包　② 把上面的材料放到合成墊　③ 點齒輪圖示完成';
+    if (n) html += `<div class="steps">${steps}</div>`;
+  } else if (p.kind === 'guide') {
+    if (p.guide.diagram) html += `<canvas class="dg" data-dg="${p.guide.diagram}"></canvas>`;
+    html += '<ol class="gl">' + p.guide.items.map(i => `<li>${esc(i)}</li>`).join('') + '</ol>';
+  } else {
+    html += `<div class="empty"><span class="g">${td.glyph}</span>${esc(p.sub)}</div>`;
+  }
+  html += '</div><div class="foot">';
+  html += idx > 0 ? '<button data-act="prev">◀　上一頁</button>' : '<span class="ph"></span>';
+  html += (p.kind === 'detail' || p.kind === 'guide') ? `<button class="mid" data-go="${p.back}">目錄</button>` : '<span class="ph mid"></span>';
+  html += idx < total - 1 ? '<button data-act="next">下一頁　▶</button>' : '<span class="ph"></span>';
+  el.innerHTML = html + '</div>';
+  return el;
+}
+
+function drawDiagrams(root){ root.querySelectorAll('canvas.dg').forEach(cv => drawDiagram(cv, cv.dataset.dg)); }
+
+function show(forward){
+  // 收掉還在動畫中的舊頁
+  stage.querySelectorAll('.pg').forEach(p => { if (p !== cur) p.remove(); else p.classList.remove('turn-in', 'turn-out'); });
+  const old = cur, nw = renderPage();
+  cur = nw;
+  if (!old || forward === undefined) { stage.replaceChildren(nw); drawDiagrams(nw); renderTabs(); return; }
+  if (forward) {
+    stage.insertBefore(nw, old);
+    old.classList.add('turn-out');
+    old.addEventListener('animationend', () => old.remove(), {once:true});
+  } else {
+    nw.classList.add('turn-in');
+    stage.appendChild(nw);
+    nw.addEventListener('animationend', () => { nw.classList.remove('turn-in'); old.remove(); }, {once:true});
+  }
+  drawDiagrams(nw);
+  renderTabs();
+}
+
+function goTo(i){
+  i = +i;
+  if (i < 0 || i >= pages.length || i === idx || isNaN(i)) return;
+  const fw = i > idx; idx = i; show(fw);
+}
+function switchTab(k){
+  if (k === tab) { goTo(0); return; }
+  const order = visibleTabs().map(t => t.key), fw = order.indexOf(k) > order.indexOf(tab);
+  if (tab === 'search') q.value = '';
+  tab = k; pages = build(k); idx = 0; show(fw);
+}
+function renderTabs(){
+  $('#tabs').innerHTML = visibleTabs().map(t =>
+    `<button class="tab ${t.key === tab ? 'on' : ''}" style="--c:${t.color}" data-tab="${t.key}" title="${esc(t.label)}">
+      <span class="in"><span class="g">${t.glyph}</span><span class="l">${esc(t.label)}</span></span></button>`).join('');
+  const on = $('#tabs .tab.on');
+  if (on && on.scrollIntoView && innerWidth <= 700) on.scrollIntoView({block:'nearest', inline:'center'});
+}
+
+// ---------- 事件 ----------
+$('#tabs').addEventListener('click', e => { const b = e.target.closest('[data-tab]'); if (b) switchTab(b.dataset.tab); });
+stage.addEventListener('click', e => {
+  const b = e.target.closest('[data-go],[data-act]');
+  if (!b || !cur || !cur.contains(b)) return;
+  const a = b.dataset.act;
+  if (a === 'prev') goTo(idx - 1);
+  else if (a === 'next') goTo(idx + 1);
+  else if (a === 'fav') {
+    const id = idOf(pages[idx].entry);
+    favs.has(id) ? favs.delete(id) : favs.add(id);
+    store.set('sotf-book-favs', [...favs]);
+    show();
+  } else goTo(b.dataset.go);
+});
+q.addEventListener('input', () => {
+  const s = q.value.trim();
+  if (!s) { if (tab === 'search') { tab = prevTab; pages = build(tab); idx = 0; } }
+  else { if (tab !== 'search') prevTab = tab; tab = 'search'; pages = build('search'); idx = 0; }
+  show();
+});
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'f') { e.preventDefault(); q.focus(); q.select(); return; }
+  if (e.key === 'Escape') {
+    if (q.value) { q.value = ''; q.dispatchEvent(new Event('input')); q.blur(); }
+    else goTo(pages[idx].kind === 'index' ? 0 : pages[idx].back);
+    return;
+  }
+  if (document.activeElement === q) { if (e.key === 'Enter' || e.key === 'ArrowDown') q.blur(); return; }
+  if (e.key === 'ArrowLeft' || e.key === 'PageUp') goTo(idx - 1);
+  else if (e.key === 'ArrowRight' || e.key === 'PageDown') goTo(idx + 1);
+  else if (e.key === 'Home') goTo(0);
+  else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+    const v = visibleTabs(), i = v.findIndex(t => t.key === tab) + (e.key === 'ArrowDown' ? 1 : -1);
+    if (i >= 0 && i < v.length) switchTab(v[i].key);
+    e.preventDefault();
+  } else return;
+});
+// 滾輪翻頁（內容可捲動時先捲動）
+let wheelLock = 0;
+stage.addEventListener('wheel', e => {
+  const body = cur && cur.querySelector('.body');
+  if (body && body.scrollHeight > body.clientHeight + 2) {
+    const atEnd = e.deltaY > 0 ? body.scrollTop + body.clientHeight >= body.scrollHeight - 2 : body.scrollTop <= 0;
+    if (!atEnd) return;
+  }
+  e.preventDefault();
+  const now = Date.now(); if (now < wheelLock) return; wheelLock = now + 380;
+  goTo(idx + (e.deltaY > 0 ? 1 : -1));
+}, {passive:false});
+// 滑動翻頁（手機）
+let tx = null, ty = null;
+stage.addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, {passive:true});
+stage.addEventListener('touchend', e => {
+  if (tx === null) return;
+  const dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
+  if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) goTo(idx + (dx < 0 ? 1 : -1));
+  tx = null;
+});
+let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => cur && drawDiagrams(cur), 120); });
+
+// ---------- 建築示意圖（與 APP 相同，座標 0~100 x 0~60）----------
+function drawDiagram(cv, kind){
+  const dpr = devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
+  if (!W || !H) return;
+  cv.width = W * dpr; cv.height = H * dpr;
+  const c = cv.getContext('2d'); c.scale(dpr, dpr); c.clearRect(0, 0, W, H);
+  const pad = 8, sc = Math.min((W - 2 * pad) / 100, (H - 2 * pad) / 60), ox = (W - sc * 100) / 2, oy = (H - sc * 60) / 2;
+  const P = (x, y) => [ox + x * sc, oy + y * sc];
+  const LOG = '#96663e', DARK = '#603e24', END = '#debA8a', PLANK = '#cda06c', RED = '#c83c3c', GREEN = '#3c8746', INK = '#463c46', BLUE = '#286460', BG = '#f7fafc';
+  const line = (x1, y1, x2, y2, w, col, cap) => { c.beginPath(); c.moveTo(...P(x1, y1)); c.lineTo(...P(x2, y2)); c.lineWidth = w; c.strokeStyle = col; c.lineCap = cap || 'butt'; c.stroke(); };
+  const ground = y => { const gy = P(0, y)[1]; c.fillStyle = '#e1ecd6'; c.fillRect(1, gy, W - 2, H - gy - 1); line(-10, y, 110, y, .6 * sc, '#78a064'); };
+  const log = (x1, y1, x2, y2, th = 3.4, ghost = false) => {
+    c.globalAlpha = ghost ? .32 : 1; line(x1, y1, x2, y2, (th + .9) * sc, DARK, 'round'); line(x1, y1, x2, y2, th * sc, LOG, 'round');
+    c.globalAlpha = ghost ? .12 : .32; line(x1, y1, x2, y2, th * .25 * sc, '#fff'); c.globalAlpha = 1;
+  };
+  const endv = (x, y, r = 2.1) => { const [cx, cy] = P(x, y), rr = r * sc; c.beginPath(); c.arc(cx, cy, rr, 0, 7); c.fillStyle = END; c.fill(); c.lineWidth = .5 * sc; c.strokeStyle = DARK; c.stroke(); c.beginPath(); c.arc(cx, cy, rr * .45, 0, 7); c.stroke(); };
+  const plank = (x1, y1, x2, y2) => { line(x1, y1, x2, y2, 2 * sc, DARK); line(x1, y1, x2, y2, 1.4 * sc, PLANK); };
+  const planks = (x1, x2, y, seg) => { for (let x = x1; x < x2 - .5; x += seg) plank(x + .4, y, Math.min(x + seg, x2) - .4, y); };
+  const spike = (x, yb, yt) => { log(x, yb, x, yt + 2.5, 2.8); c.beginPath(); c.moveTo(...P(x - 1.7, yt + 2.3)); c.lineTo(...P(x + 1.7, yt + 2.3)); c.lineTo(...P(x, yt)); c.closePath(); c.fillStyle = END; c.fill(); c.lineWidth = .5 * sc; c.strokeStyle = DARK; c.stroke(); };
+  const label = (x, y, s, col) => {
+    const px = Math.max(12, 3 * sc); c.font = `bold ${px}px ${FONT}`;
+    const w = c.measureText(s).width, h = px * 1.4; let [lx, ly] = P(x, y); lx = Math.max(4, Math.min(lx - w / 2, W - w - 4));
+    c.fillStyle = 'rgba(255,255,255,.9)'; c.fillRect(lx - 3, ly - h / 2, w + 6, h); c.fillStyle = col; c.textBaseline = 'middle'; c.fillText(s, lx, ly + 1);
+  };
+  const cross = (x, y, s) => { line(x - s, y - s, x + s, y + s, 1.1 * sc, RED); line(x - s, y + s, x + s, y - s, 1.1 * sc, RED); };
+  const arrowDown = (x, y1, y2, col) => { line(x, y1, x, y2 - 1.5, .8 * sc, col); const [bx, by] = P(x, y2), s = 1.6 * sc; c.beginPath(); c.moveTo(bx, by); c.lineTo(bx - s, by - s * 1.6); c.lineTo(bx + s, by - s * 1.6); c.closePath(); c.fillStyle = col; c.fill(); };
+  const dash = (x1, y1, x2, y2) => { const [ax, ay] = P(x1, y1), [bx, by] = P(x2, y2); c.fillStyle = BG; c.fillRect(ax, ay, bx - ax, by - ay); c.setLineDash([4, 3]); c.strokeStyle = RED; c.lineWidth = .6 * sc; c.strokeRect(ax, ay, bx - ax, by - ay); c.setLineDash([]); };
+
+  switch (kind) {
+    case 'collapse':
+      ground(54);
+      c.setLineDash([4, 4]); line(50, 4, 50, 54, .5 * sc, '#c8c8d0'); c.setLineDash([]);
+      log(6, 54, 6, 30); log(44, 54, 44, 30); log(3, 30, 24, 38); log(24, 38, 47, 30);
+      arrowDown(24, 21, 32, RED);
+      label(25, 9, '✗ 跨距太長會塌', RED);
+      log(57, 54, 57, 30); log(76, 54, 76, 30); log(95, 54, 95, 30); log(54, 30, 98, 30);
+      label(76, 9, '✓ 中間加柱子', GREEN); label(76, 44, '中柱', INK);
+      break;
+    case 'beam':
+      ground(54); log(22, 54, 22, 24); log(78, 54, 78, 24); log(14, 24, 86, 24);
+      label(22, 39, '① 直立柱', BLUE); label(50, 13, '② 橫放原木當樑', BLUE); label(78, 39, '③ 另一端撐起', BLUE);
+      label(50, 48, '柱子用斧頭砍短 → 調整高度', INK);
+      break;
+    case 'strut':
+      ground(54); log(12, 54, 12, 20); log(88, 54, 88, 20);
+      log(50, 54, 50, 20, 3.4, true); cross(50, 36, 4);
+      log(8, 20, 92, 20); log(12, 34, 26, 20, 2.6); log(88, 34, 74, 20, 2.6);
+      label(30, 31, '斜撐（半截原木）', BLUE); label(74, 31, '斜撐', BLUE);
+      label(50, 47, '有斜撐後，中柱可以拆', RED); label(50, 11, '樑', INK);
+      break;
+    case 'platform':
+      ground(54); log(14, 54, 14, 33); log(50, 54, 50, 33); log(86, 54, 86, 33); log(10, 33, 90, 33);
+      planks(10, 90, 29.6, 7);
+      label(50, 19, '③ 原木劈成木板，鋪滿', BLUE); label(32, 44, '① 柱子', BLUE); label(70, 42, '② 樑圍成方形', BLUE);
+      break;
+    case 'wall':
+      ground(54);
+      for (let i = 0; i < 7; i++) log(14, 51.5 - i * 4.1, 86, 51.5 - i * 4.1, 3.6);
+      dash(56, 26, 74, 39); dash(24, 34, 36, 53.6);
+      log(22.6, 53.5, 22.6, 34.5, 2.2); log(37.4, 53.5, 37.4, 34.5, 2.2);
+      label(50, 10, '原木橫放，疊約 7 層高', BLUE); label(65, 32.5, '窗', RED);
+      label(30, 19, '門：砍到底＋兩側半截原木', RED); arrowDown(30, 21.5, 33, RED);
+      break;
+    case 'roof':
+      ground(54);
+      for (let i = 0; i < 6; i++) { endv(18, 51.5 - i * 4.4); endv(82, 51.5 - i * 4.4); }
+      log(14, 28, 50, 8); log(86, 28, 50, 8);
+      for (let i = 1; i < 6; i++) { const t = i / 6; endv(14 + 36 * t, 28 - 20 * t - 2.7, 1.3); endv(86 - 36 * t, 28 - 20 * t - 2.7, 1.3); }
+      endv(50, 8, 2.4);
+      label(18, 41, '牆', INK); label(82, 41, '牆', INK);
+      label(50, 25, '② 原木斜靠在牆頂', BLUE); label(50, 36, '③ 木板橫向鋪滿', BLUE); label(50, 47, '① 先蓋好兩面牆', BLUE);
+      break;
+    case 'stairs':
+      ground(54); log(73, 54, 73, 22); log(94, 54, 94, 22); log(70, 22, 97, 22); planks(70, 97, 18.8, 6.5);
+      [18, 30, 42, 54, 66].forEach((x, i) => { const y = 49 - i * 6; log(x, 54, x, y, 2.4); plank(x - 6, y - 1.3, x + 5, y - 1.3); });
+      label(34, 20, '柱子＋橫木逐級往上', BLUE); label(84, 10, '接到平台', BLUE);
+      break;
+    case 'base':
+      ground(56);
+      spike(4, 56, 41); spike(8.5, 56, 41); spike(91.5, 56, 41); spike(96, 56, 41);
+      log(24, 56, 24, 40); log(50, 56, 50, 40); log(76, 56, 76, 40); log(20, 40, 80, 40);
+      log(24, 49, 32, 40, 2.4); log(76, 49, 68, 40, 2.4);
+      planks(20, 80, 37, 6);
+      for (let i = 0; i < 4; i++) { endv(23, 33.3 - i * 4.2, 1.9); endv(77, 33.3 - i * 4.2, 1.9); }
+      log(19, 19, 50, 5); log(81, 19, 50, 5); endv(50, 5, 2);
+      label(50, 26, '牆＋屋頂', BLUE); label(50, 50, '柱子＋斜撐撐起高架地板', BLUE);
+      label(7, 34, '防禦牆', RED); label(93, 34, '防禦牆', RED);
+      break;
+  }
+}
+
+// 網址定位：#分類/頁碼，例如 #howto/9
+const _show = show;
+show = function(fw){
+  _show(fw);
+  try { if (tab !== 'search') history.replaceState(null, '', '#' + tab + '/' + (idx + 1)); } catch(e){}
+};
+(function init(){
+  const m = location.hash.match(/^#(\w+)(?:\/(\d+))?/);
+  if (m && B.tabs.some(t => t.key === m[1])) tab = m[1];
+  pages = build(tab);
+  if (m && m[2]) idx = Math.min(Math.max(+m[2] - 1, 0), pages.length - 1);
+  show();
+})();
+</script>
+</body>
+</html>

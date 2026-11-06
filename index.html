@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>森林之子攻略查詢</title>
+<style>
+:root{
+  --bg:#0f1512; --panel:#17201b; --panel2:#1e2a23; --line:#2c3b32;
+  --text:#e4ebe5; --muted:#93a598; --accent:#d9a441; --accent2:#7fbf7a; --red:#e07a5f;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Microsoft JhengHei","PingFang TC","Noto Sans TC",system-ui,sans-serif;font-size:15px}
+header{position:sticky;top:0;z-index:5;background:linear-gradient(#0f1512 85%,#0f151200);padding:14px 16px 8px}
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+h1{font-size:20px;margin:0;color:var(--accent);letter-spacing:1px;white-space:nowrap}
+h1 small{color:var(--muted);font-size:12px;font-weight:normal;margin-left:6px}
+#q{flex:1;min-width:200px;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--text);font-size:16px;outline:none}
+#q:focus{border-color:var(--accent)}
+nav{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+nav button,.sub button{background:var(--panel);border:1px solid var(--line);color:var(--muted);padding:6px 12px;border-radius:999px;cursor:pointer;font-size:14px;font-family:inherit}
+nav button.on{background:var(--accent);border-color:var(--accent);color:#1a1205;font-weight:bold}
+.sub{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 0}
+.sub button{font-size:12px;padding:4px 10px}
+.sub button.on{border-color:var(--accent2);color:var(--accent2)}
+main{padding:6px 16px 40px;max-width:1200px;margin:0 auto}
+.count{color:var(--muted);font-size:12px;margin:6px 0 10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;position:relative}
+.card .tag{font-size:11px;color:var(--accent2);border:1px solid #3d5a3c;border-radius:6px;padding:1px 6px;display:inline-block;margin-bottom:4px}
+.card h3{margin:2px 0 0;font-size:16px;padding-right:26px}
+.card .en{color:var(--muted);font-size:12px;margin-bottom:8px}
+.mats{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0}
+.mats span{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:2px 7px;font-size:13px;cursor:pointer}
+.mats span:hover{border-color:var(--accent)}
+.card p{margin:6px 0 0;font-size:13.5px;line-height:1.6;color:#c9d4cc}
+.req{font-size:12.5px;color:var(--red);margin-top:6px}
+.star{position:absolute;top:10px;right:10px;background:none;border:0;font-size:18px;cursor:pointer;color:#55665b}
+.star.on{color:var(--accent)}
+.guide{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px}
+.guide .card h3{color:var(--accent);margin-bottom:8px}
+.guide ol,.guide ul{margin:0;padding-left:18px;line-height:1.75;font-size:14px}
+mark{background:#d9a44155;color:inherit;border-radius:3px}
+.empty{color:var(--muted);text-align:center;padding:40px}
+footer{color:var(--muted);font-size:12px;padding:0 16px 30px;max-width:1200px;margin:0 auto;line-height:1.8}
+footer a{color:var(--accent2)}
+@media (max-width:500px){h1{font-size:17px}.guide{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <h1>🌲 森林之子攻略<small>Sons Of The Forest</small></h1>
+    <input id="q" type="search" placeholder="搜尋道具、建築、材料…（例：繩子、骨頭、Shovel）  按 / 快速聚焦" autofocus>
+  </div>
+  <nav id="tabs"></nav>
+  <div class="sub" id="subs"></div>
+</header>
+<main>
+  <div class="count" id="count"></div>
+  <div id="list"></div>
+</main>
+<footer id="foot"></footer>
+
+<script src="data.js"></script>
+<script>
+const TABS=[
+  ['all','全部'],['fav','★ 我的最愛'],['guide','簡易攻略'],['item','道具取得'],
+  ['craft','合成'],['build','建築'],['trap','陷阱'],['cook','烹飪'],['print','3D 列印']
+];
+const CAT={craft:'合成',build:'建築',trap:'陷阱',cook:'烹飪',item:'道具取得',print:'3D 列印'};
+const D=window.SOTF_DATA, G=window.SOTF_GUIDE;
+D.forEach((x,i)=>x.id=x.c+':'+x.e);
+
+const store={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let favs=new Set(store.get('sotf-favs',[]));
+let tab=store.get('sotf-tab','guide'), sub='';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function hl(s,q){s=esc(s);if(!q)return s;const t=q.split(/\s+/).filter(Boolean).map(w=>w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));return t.length?s.replace(new RegExp('('+t.join('|')+')','gi'),'<mark>$1</mark>'):s}
+function match(x,q){if(!q)return true;const hay=[x.n,x.e,x.s,CAT[x.c],x.d,x.r,...(x.m||[])].join(' ').toLowerCase();return q.toLowerCase().split(/\s+/).every(w=>hay.includes(w))}
+
+function renderTabs(){
+  $('#tabs').innerHTML=TABS.map(([k,v])=>`<button data-t="${k}" class="${k===tab?'on':''}">${v}</button>`).join('');
+  const pool=D.filter(x=>x.c===tab);
+  const subs=[...new Set(pool.map(x=>x.s))];
+  $('#subs').innerHTML=subs.length>1?['',...subs].map(s=>`<button data-s="${s}" class="${s===sub?'on':''}">${s||'全部'}</button>`).join(''):'';
+}
+function card(x,q){
+  return `<div class="card">
+    <button class="star ${favs.has(x.id)?'on':''}" data-f="${esc(x.id)}" title="加入最愛">★</button>
+    <span class="tag">${CAT[x.c]}・${esc(x.s)}</span>
+    <h3>${hl(x.n,q)}</h3><div class="en">${hl(x.e,q)}</div>
+    ${x.m?`<div class="mats">${x.m.map(m=>`<span data-m="${esc(m.split('×')[0].replace(/\s*(約|少量|\d+ml).*$/,'').trim())}">${hl(m,q)}</span>`).join('')}</div>`:''}
+    ${x.d?`<p>${hl(x.d,q)}</p>`:''}
+    ${x.r?`<div class="req">需求：${hl(x.r,q)}</div>`:''}
+  </div>`;
+}
+function renderGuide(q){
+  const gs=G.map(g=>({t:g.t,items:g.items.filter(i=>!q||match({n:g.t,d:i},q))})).filter(g=>g.items.length);
+  if(!gs.length)return '';
+  return `<div class="guide">${gs.map(g=>`<div class="card"><h3>${hl(g.t,q)}</h3><ul>${g.items.map(i=>`<li>${hl(i,q)}</li>`).join('')}</ul></div>`).join('')}</div>`;
+}
+function render(){
+  renderTabs();
+  const q=$('#q').value.trim();
+  let html='',n=0;
+  if(tab==='guide'||(tab==='all'&&q)){const g=renderGuide(q);if(g){html+=g;n++;}}
+  if(tab!=='guide'){
+    let rows=D.filter(x=>tab==='all'||(tab==='fav'?favs.has(x.id):x.c===tab));
+    if(sub)rows=rows.filter(x=>x.s===sub);
+    rows=rows.filter(x=>match(x,q));
+    n+=rows.length;
+    if(rows.length)html+=(html?'<div style="height:12px"></div>':'')+`<div class="grid">${rows.map(x=>card(x,q)).join('')}</div>`;
+    $('#count').textContent=`共 ${rows.length} 筆`+(q?`（搜尋「${q}」）`:'')+(tab==='print'?'　※ 3D 列印數值為社群整理，以遊戲內為準':'');
+  }else $('#count').textContent='點材料標籤可直接搜尋「哪些東西會用到它」';
+  if(!n)html=`<div class="empty">${tab==='fav'?'還沒有最愛，點卡片右上角的 ★ 加入':'找不到符合的資料'}</div>`;
+  $('#list').innerHTML=html;
+}
+$('#tabs').onclick=e=>{const t=e.target.dataset.t;if(t){tab=t;sub='';store.set('sotf-tab',t);render();}};
+$('#subs').onclick=e=>{const s=e.target.dataset.s;if(s!==undefined){sub=s;render();}};
+$('#list').onclick=e=>{
+  const f=e.target.dataset.f;
+  if(f){favs.has(f)?favs.delete(f):favs.add(f);store.set('sotf-favs',[...favs]);render();return;}
+  const m=e.target.closest('[data-m]');
+  if(m){$('#q').value=m.dataset.m;tab='all';sub='';render();window.scrollTo(0,0);}
+};
+$('#q').oninput=()=>{if($('#q').value&&tab==='guide'){tab='all';sub='';}render();};
+document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&document.activeElement!==$('#q')){e.preventDefault();$('#q').focus();$('#q').select();}
+  if(e.key==='Escape'){$('#q').value='';render();}
+});
+$('#foot').innerHTML='資料來源：'+window.SOTF_SOURCES.map(([n,u])=>`<a href="${u}" target="_blank">${n}</a>`).join('、')+'<br>內容整理自社群攻略，遊戲改版後數值可能不同。';
+render();
+</script>
+</body>
+</html>
