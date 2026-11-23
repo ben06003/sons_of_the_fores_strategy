@@ -2,7 +2,8 @@
   "use strict";
 
   const DATA = window.POE_DATA;
-  const builds = DATA.builds;
+  const VISIBLE = window.POE_VISIBLE || [];
+  const builds = VISIBLE.length ? DATA.builds.filter((b) => VISIBLE.includes(b.id)) : DATA.builds;
   const TAGS = DATA.tags;
   const RANK = { "強": 3, "中": 2, "中下": 1 };
   const GUIDES = (window.POE_GUIDES && window.POE_GUIDES.guides) || {};

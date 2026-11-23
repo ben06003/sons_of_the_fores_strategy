@@ -20,6 +20,10 @@
 - 對照表 `web/data/names.js`、圖示 `web/assets/icons/` 由 `scripts/twnames.py` + `scripts/build_names.py tw.json web` 從 poedb.tw 產生
 - `scripts/pobdecode.py`、`scripts/pobcompact.py` 可解碼 POB 匯出碼，方便整理技能組與裝備
 
+## 輿圖策略攻略（web/strategy.html）
+
+3.30 輿圖系統變更、開荒推圖流程（拿滿 4 顆虛空石）、8 種刷錢策略（含天賦、絲線、步驟、收益、SSF 適用度）與參考來源。內容寫在 `web/data/strategies.js`，收益多為來源作者自述。
+
 ## 更新資料
 
 試算表更新後執行：
@@ -41,6 +45,8 @@ python scripts/sync_sheet.py
 | `web/guide.js` | 攻略頁渲染 |
 | `web/data/builds.js` | 流派資料（自動產生） |
 | `web/data/guides.js` | 4 個流派的攻略內容 |
+| `web/strategy.html`、`web/strategy.js`、`web/data/strategies.js` | 輿圖策略攻略頁 |
+| `web/data/visible.js` | 顯示白名單：只列出陣列中的流派 id，清空即顯示全部 |
 | `web/data/names.js`、`web/assets/icons/` | 台服／國際服名稱對照與圖示（自動產生） |
 | `scripts/` | 試算表同步、名稱對照、POB 解碼腳本 |
 | `.github/workflows/pages.yml` | GitHub Pages 部署 |

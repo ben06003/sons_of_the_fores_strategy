@@ -113,3 +113,18 @@
 .guide-btn { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; padding: 8px 14px; border-radius: 8px; background: var(--gold); color: var(--bg); font-weight: 700; text-decoration: none; }
 .guide-btn:hover { filter: brightness(1.1); }
 .has-guide { color: var(--gold); }
+
+/* ---------- 站內導覽／策略頁 ---------- */
+.site-nav { display: flex; align-items: center; gap: 14px; font-size: .95rem; }
+.site-nav a { color: var(--muted); text-decoration: none; }
+.site-nav a:hover, .site-nav a[aria-current="page"] { color: var(--gold); }
+.tbl-scroll { overflow-x: auto; }
+.strat-tbl td:first-child { white-space: nowrap; color: var(--gold); vertical-align: top; }
+.strat-tbl ul { margin: 0; padding-left: 1.1em; }
+.guide-layout > * { min-width: 0; }
+.guide .src-list a, .guide .src-list .url, .guide .lead a { overflow-wrap: anywhere; }
+@media (max-width: 520px) {
+  .site-nav { gap: 10px; font-size: .85rem; }
+  .brand span:last-child { display: none; }
+}
+.hero.noicon { grid-template-columns: 1fr; }

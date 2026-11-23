@@ -5,7 +5,8 @@
   const NAMES = window.POE_NAMES || {};
   const G = window.POE_GUIDES;
   const id = new URLSearchParams(location.search).get("id");
-  const build = DATA.builds.find((b) => b.id === id);
+  const VISIBLE = window.POE_VISIBLE || [];
+  const build = (!VISIBLE.length || VISIBLE.includes(id)) ? DATA.builds.find((b) => b.id === id) : null;
   const guide = G.guides[id];
   const root = document.getElementById("guide");
   const toc = document.getElementById("toc");

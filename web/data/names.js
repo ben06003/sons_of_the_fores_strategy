@@ -132,6 +132,11 @@ window.POE_NAMES = {
   "tw": "禁禮之靴",
   "icon": "assets/icons/Armours_Boots_BootsDexInt4.webp"
  },
+ "Cast when Damage Taken": {
+  "tw": "受傷時施放輔助",
+  "color": "W",
+  "icon": "assets/icons/Gems_Support_CastOnDmgTaken.webp"
+ },
  "Champion Kite Shield": {
   "tw": "鬥士鳶盾",
   "icon": "assets/icons/Armours_Shields_ShieldStrInt4.webp"
@@ -183,6 +188,10 @@ window.POE_NAMES = {
   "tw": "冷卻恢復輔助",
   "color": "W",
   "icon": "assets/icons/Gems_Support_CooldownRecovery.webp"
+ },
+ "Corpse Rose": {
+  "tw": "屍綻血玫",
+  "icon": "assets/icons/Weapons_OneHandWeapons_Wands_FloresSanguinaire.webp"
  },
  "Crackling Lance": {
   "tw": "碎雷電閃",
@@ -239,6 +248,11 @@ window.POE_NAMES = {
   "tw": "夢語之痕",
   "icon": "assets/icons/Rings_Ring6Unique.webp"
  },
+ "Eldritch Blasphemy": {
+  "tw": "異界詛咒光環輔助",
+  "color": "W",
+  "icon": "assets/icons/Gems_Support_Aurify.webp"
+ },
  "Elegant Ringmail": {
   "tw": "權貴環甲",
   "icon": "assets/icons/Armours_BodyArmours_BodyStrInt1C.webp"
@@ -267,6 +281,11 @@ window.POE_NAMES = {
   "tw": "衰弱",
   "color": "B",
   "icon": "assets/icons/Gems_Enfeeble.webp"
+ },
+ "Enhance": {
+  "tw": "增幅輔助",
+  "color": "W",
+  "icon": "assets/icons/Gems_Support_enhance.webp"
  },
  "Eternal Blessing": {
   "tw": "永恆祝福輔助",
@@ -359,6 +378,9 @@ window.POE_NAMES = {
   "tw": "金縷帽",
   "icon": "assets/icons/Armours_Helmets_HelmetDexUnique2.webp"
  },
+ "Goreblossom": {
+  "tw": "綻血盛放"
+ },
  "Grace": {
   "tw": "優雅",
   "color": "G",
@@ -383,6 +405,10 @@ window.POE_NAMES = {
   "tw": "迅捷",
   "color": "G",
   "icon": "assets/icons/Gems_Haste.webp"
+ },
+ "Healthy Mind": {
+  "tw": "靈體轉換",
+  "icon": "assets/icons/Jewels_BlueJewel7.webp"
  },
  "Heathen Wand": {
   "tw": "異徒法杖",
@@ -510,6 +536,10 @@ window.POE_NAMES = {
  "Kitavas Thirst": {
   "tw": "奇塔弗之渴望",
   "icon": "assets/icons/Armours_Helmets_KitavasThirst.webp"
+ },
+ "Lavianga's Spirit": {
+  "tw": "拉維安加之泉",
+  "icon": "assets/icons/Flasks_LaviangasOil.webp"
  },
  "Leap Slam": {
   "tw": "躍擊",
@@ -802,6 +832,10 @@ window.POE_NAMES = {
   "color": "G",
   "icon": "assets/icons/Gems_TemporalChains.webp"
  },
+ "The Light of Meaning": {
+  "tw": "意涵之光",
+  "icon": "assets/icons/Jewels_AfflictionJewel.webp"
+ },
  "Thrillsteel": {
   "tw": "顫慄之鋼",
   "icon": "assets/icons/Armours_Helmets_HelmofWar.webp"
@@ -844,6 +878,10 @@ window.POE_NAMES = {
   "tw": "釋放輔助",
   "color": "W",
   "icon": "assets/icons/Gems_Support_UnleashSupport.webp"
+ },
+ "Unnatural Instinct": {
+  "tw": "神感",
+  "icon": "assets/icons/Jewels_UnnaturalInstinct.webp"
  },
  "Vaal Haste": {
   "tw": "瓦爾．迅捷",
